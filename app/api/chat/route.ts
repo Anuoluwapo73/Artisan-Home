@@ -1,32 +1,37 @@
-import { openai } from "@ai-sdk/openai";
+import { createGroq } from "@ai-sdk/groq";
 import { streamText } from "ai";
 
-export const runtime = "edge";
+const groq = createGroq({
+    apiKey: process.env.GROQ_API_KEY || ""
+});
 
 export async function POST(req: Request) {
-    const { messages } = await req.json();
+    try {
+        const { messages } = await req.json();
 
-    const result = await streamText({
-        model: openai("gpt-3.5-turbo"),
-        system: `You are a helpful AI shopping assistant for Artisan Home, a premium furniture and home decor store. 
+        if (!process.env.GROQ_API_KEY) {
+            return new Response(
+                JSON.stringify({
+                    error: "Groq API key not configured. Please add GROQ_API_KEY to your .env.local file."
+                }),
+                { status: 500, headers: { "Content-Type": "application/json" } }
+            );
+        }
 
-Your role:
-- Help customers find the perfect furniture and decor
-- Provide style advice and recommendations
-- Answer questions about products, shipping, and returns
-- Be friendly, professional, and knowledgeable about interior design
-- Keep responses concise and helpful
+        const result = streamText({
+            model: groq("llama-3.3-70b-versatile"),
+            messages
+        });
 
-Store information:
-- We offer furniture for living rooms, bedrooms, and decor items
-- Free shipping on all orders over $100
-- 30-day return policy
-- 2-year warranty on furniture
-- Products range from $50 to $3000
+        return result.toTextStreamResponse();
+    } catch (error: any) {
+        console.error("Chat API error:", error);
 
-Be enthusiastic about helping customers create their dream space!`,
-        messages,
-    });
-
-    return result.toDataStreamResponse();
+        return new Response(
+            JSON.stringify({
+                error: error?.message || "Failed to process chat request. Please try again."
+            }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+    }
 }

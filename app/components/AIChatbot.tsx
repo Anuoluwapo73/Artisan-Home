@@ -32,7 +32,7 @@ export default function AIChatbot() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/app/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
