@@ -14,9 +14,11 @@ export default function BedroomPage() {
 
   useEffect(() => {
     if (status === "loading") return;
-    if (!session) {
-      router.push("/auth/login");
-      return;
+    if (status === "unauthenticated") {
+      const timer = setTimeout(() => {
+        router.push("/auth/login");
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [session, status, router]);
 
@@ -31,7 +33,7 @@ export default function BedroomPage() {
     );
   }
 
-  if (!session) {
+  if (status === "unauthenticated") {
     return null;
   }
 

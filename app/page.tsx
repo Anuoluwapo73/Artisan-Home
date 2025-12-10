@@ -16,9 +16,12 @@ export default function Page() {
 
   useEffect(() => {
     if (status === "loading") return; // Still loading
-    if (!session) {
-      router.push("/auth/login");
-      return;
+    if (status === "unauthenticated") {
+      // Add a small delay to prevent immediate redirect loops
+      const timer = setTimeout(() => {
+        router.push("/auth/login");
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [session, status, router]);
 
@@ -34,7 +37,7 @@ export default function Page() {
     );
   }
 
-  if (!session) {
+  if (status === "unauthenticated") {
     return null; // Will redirect, don't show anything
   }
 
