@@ -1,22 +1,30 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with proper error handling
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("RESEND_API_KEY not found in environment variables");
+    return null;
+  }
+  return new Resend(apiKey);
+};
 
 export async function POST(request: Request) {
-    try {
-        const { email, cartItems, totalAmount } = await request.json();
+  try {
+    const { email, cartItems, totalAmount } = await request.json();
 
-        // Validate input
-        if (!email || !cartItems || !totalAmount) {
-            return NextResponse.json(
-                { error: "Missing required fields" },
-                { status: 400 }
-            );
-        }
+    // Validate input
+    if (!email || !cartItems || !totalAmount) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
-        // Generate email HTML
-        const emailHTML = `
+    // Generate email HTML
+    const emailHTML = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -61,48 +69,57 @@ export async function POST(request: Request) {
       </html>
     `;
 
-        console.log("📦 Processing order for:", email);
-        console.log("Items:", cartItems.length, "| Total: $" + totalAmount);
+    console.log("📦 Processing order for:", email);
+    console.log("Items:", cartItems.length, "| Total: $" + totalAmount);
 
-        try {
-            // Send email using Resend
-            console.log("📧 Sending email via Resend...");
+    try {
+      // Send email using Resend
+      console.log("📧 Sending email via Resend...");
 
-            const { data, error } = await resend.emails.send({
-                from: "Artisan Home <onboarding@resend.dev>",
-                to: email,
-                subject: "Order Confirmation - Artisan Home",
-                html: emailHTML,
-            });
+      const resend = getResendClient();
+      if (!resend) {
+        console.error("❌ Resend client not available - API key missing");
+        return NextResponse.json({
+          success: true,
+          message: "Order confirmed! (Email notification pending - configuration issue)",
+        });
+      }
 
-            if (error) {
-                console.error("❌ Resend error:", error);
-                return NextResponse.json({
-                    success: true,
-                    message: "Order confirmed! (Email notification pending)",
-                });
-            }
+      const { data, error } = await resend.emails.send({
+        from: "Artisan Home <onboarding@resend.dev>",
+        to: email,
+        subject: "Order Confirmation - Artisan Home",
+        html: emailHTML,
+      });
 
-            console.log("✅ Email sent successfully! ID:", data?.id);
+      if (error) {
+        console.error("❌ Resend error:", error);
+        return NextResponse.json({
+          success: true,
+          message: "Order confirmed! (Email notification pending)",
+        });
+      }
 
-            return NextResponse.json({
-                success: true,
-                message: "Order confirmation email sent successfully!",
-            });
-        } catch (emailError: any) {
-            console.error("❌ Email sending failed:", emailError.message);
+      console.log("✅ Email sent successfully! ID:", data?.id);
 
-            // Return success anyway - order was processed
-            return NextResponse.json({
-                success: true,
-                message: "Order confirmed! (Email notification pending)",
-            });
-        }
-    } catch (error: any) {
-        console.error("❌ Checkout error:", error.message);
-        return NextResponse.json(
-            { error: "Failed to process checkout" },
-            { status: 500 }
-        );
+      return NextResponse.json({
+        success: true,
+        message: "Order confirmation email sent successfully!",
+      });
+    } catch (emailError: any) {
+      console.error("❌ Email sending failed:", emailError.message);
+
+      // Return success anyway - order was processed
+      return NextResponse.json({
+        success: true,
+        message: "Order confirmed! (Email notification pending)",
+      });
     }
+  } catch (error: any) {
+    console.error("❌ Checkout error:", error.message);
+    return NextResponse.json(
+      { error: "Failed to process checkout" },
+      { status: 500 }
+    );
+  }
 }
