@@ -3,60 +3,67 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div>
+    <div className="px-2 sm:px-4">
       <hr className="border-1" />
-      <div className="my-10 px-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="flex flex-col gap-5">
-          <h2 className="text-2xl playfair-display-regular">Artisan Home</h2>
-          <p className="text-muted-foreground">
+      <div className="my-8 sm:my-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <div className="flex flex-col gap-4 sm:gap-5 sm:col-span-2 lg:col-span-1">
+          <h2 className="text-xl sm:text-2xl playfair-display-regular">Artisan Home</h2>
+          <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
             Premium furniture and decor for modern living spaces. Quality
             craftsmanship, timeless design.
           </p>
-          <div className="flex gap-5 ml-3">
-            <Facebook className="size-4" />
-            <Instagram className="size-4" />
-            <Twitter className="size-4" />
+          <div className="flex gap-4 sm:gap-5">
+            <Facebook className="size-5 sm:size-6 cursor-pointer hover:text-orange-700 transition-colors" />
+            <Instagram className="size-5 sm:size-6 cursor-pointer hover:text-orange-700 transition-colors" />
+            <Twitter className="size-5 sm:size-6 cursor-pointer hover:text-orange-700 transition-colors" />
           </div>
         </div>
 
-        <div className="flex flex-col gap-5">
-          <h3 className="text-[20px] font-semibold">Shop</h3>
-          <p className="text-[17px]">New Arrivals</p>
-          <p className="text-[17px]">Furniture</p>
-          <p className="text-[17px]">Decor</p>
-          <p className="text-[17px]">Sale</p>
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <h3 className="text-lg sm:text-xl font-semibold">Shop</h3>
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">New Arrivals</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Furniture</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Decor</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Sale</p>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-5">
-          <h3 className="text-[20px] font-semibold">Support</h3>
-          <p className="text-[17px]">Contact Us</p>
-          <p className="text-[17px]">Shipping Info</p>
-          <p className="text-[17px]">Returns</p>
-          <p className="text-[17px]">FAQ</p>
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <h3 className="text-lg sm:text-xl font-semibold">Support</h3>
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Contact Us</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Shipping Info</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">Returns</p>
+            <p className="text-sm sm:text-base text-muted-foreground hover:text-orange-700 cursor-pointer transition-colors">FAQ</p>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-5">
-          <h3 className="text-[20px] font-semibold">Newsletter</h3>
-          <p className="text-muted-foreground">
+        <div className="flex flex-col gap-3 sm:gap-4 sm:col-span-2 lg:col-span-1">
+          <h3 className="text-lg sm:text-xl font-semibold">Newsletter</h3>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Subscribe for exclusive offers and updates
           </p>
-          <span className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
               placeholder="Your email"
-              className="border-3 w-[65%] h-[40px] p-2 rounded-md"
+              className="flex-1 border border-gray-300 dark:border-gray-600 h-10 sm:h-11 px-3 rounded-md text-sm sm:text-base bg-background"
             />
-            <button className="text-white bg-amber-700 w-[35%] h-[40px] p-2 rounded-md">
+            <button className="text-white bg-amber-700 hover:bg-amber-800 px-4 sm:px-6 h-10 sm:h-11 rounded-md text-sm sm:text-base font-medium transition-colors whitespace-nowrap">
               Subscribe
             </button>
-          </span>
+          </div>
         </div>
       </div>
       <hr className="border-1" />
 
-      <div className="flex py-10 text-muted-foreground flex-col text-[15px] text-center gap-4 md:justify-between md:flex-row">
+      <div className="flex py-6 sm:py-8 lg:py-10 text-muted-foreground flex-col text-sm sm:text-base text-center gap-3 sm:gap-4 lg:justify-between lg:flex-row">
         <footer>&copy; 2025 Artisan Home. All rights reserved</footer>
-        <p>Privacy Policy &nbsp; &nbsp; Terms of Service</p>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 justify-center lg:justify-end">
+          <p className="hover:text-orange-700 cursor-pointer transition-colors">Privacy Policy</p>
+          <p className="hover:text-orange-700 cursor-pointer transition-colors">Terms of Service</p>
+        </div>
       </div>
     </div>
   );
